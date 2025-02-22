@@ -639,8 +639,8 @@ async function dockerBuild(
     'export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"',
     `echo "Install Rust toolchain ${rustToolchain}"`,
     `rustup override set ${rustToolchain}`,
-    `rm -frv ~/.rustup/toolchains/`, // refer to https://github.com/rust-lang/rustup/issues/1167#issuecomment-367061388
-    `rustup show`, // download the latest toolchain
+    'rm -frv ~/.rustup/toolchains/', // refer to https://github.com/rust-lang/rustup/issues/1167#issuecomment-367061388
+    'rustup show', // download the latest toolchain
     `rustup component add llvm-tools-preview || true`,
     'echo "::endgroup::"',
     // Add all supported python versions to PATH
@@ -939,6 +939,7 @@ async function hostBuild(
   if (rustToolchain && rustToolchain.length > 0) {
     core.info(`Installing Rust toolchain ${rustToolchain}`)
     await exec.exec('rustup', ['override', 'set', rustToolchain])
+    await exec.exec('rustup', ['update'])
     await exec.exec('rustup', ['component', 'add', 'llvm-tools-preview'], {
       ignoreReturnCode: true
     })
