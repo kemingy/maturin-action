@@ -637,10 +637,9 @@ async function dockerBuild(
     'echo "::group::Install Rust"',
     `which rustup > /dev/null || curl --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain ${rustToolchain}`,
     `rustup override set ${rustToolchain}`,
-    'echo "::group:: Update rust version"',
+    'echo "Update rust version"',
     'rm -frv ~/.rustup/toolchains/', // refer to https://github.com/rust-lang/rustup/issues/1167#issuecomment-367061388
     'rustup show', // download the latest toolchain
-    'echo "::endgroup::"',
     'export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"',
     `echo "Install Rust toolchain ${rustToolchain}"`,
     `rustup component add llvm-tools-preview || true`,
@@ -937,11 +936,8 @@ async function hostBuild(
   const isUniversal2 =
     args.includes('--universal2') || target === 'universal2-apple-darwin'
 
-  core.startGroup('Update Rust')
-  core.info('Update Rust')
-  await exec.exec('rustup', ['update'])
-  core.endGroup()
   core.startGroup('Install Rust target')
+  await exec.exec('rustup', ['update'])
   if (rustToolchain && rustToolchain.length > 0) {
     core.info(`Installing Rust toolchain ${rustToolchain}`)
     await exec.exec('rustup', ['override', 'set', rustToolchain])
@@ -1148,8 +1144,6 @@ async function innerMain(): Promise<void> {
 
 async function main(): Promise<void> {
   try {
-    const commitHash = process.env.GITHUB_SHA;
-    console.log(`Action is running from commit: ${commitHash}`);
     await innerMain()
   } catch (err: unknown) {
     if (err instanceof Error) {
