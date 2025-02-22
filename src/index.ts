@@ -1148,6 +1148,8 @@ async function innerMain(): Promise<void> {
 
 async function main(): Promise<void> {
   try {
+    const commitHash = process.env.GITHUB_SHA;
+    console.log(`Action is running from commit: ${commitHash}`);
     await innerMain()
   } catch (err: unknown) {
     if (err instanceof Error) {
